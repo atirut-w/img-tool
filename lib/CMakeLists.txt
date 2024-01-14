@@ -1,2 +1,4 @@
-add_library("libimgtool" INTERFACE)
-target_include_directories("libimgtool" INTERFACE "include")
+add_library("libimgtool"
+    "archive.cpp"
+)
+target_include_directories("libimgtool" PUBLIC "include")
