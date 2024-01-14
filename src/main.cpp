@@ -1,6 +1,7 @@
 #include <argparse/argparse.hpp>
-#include <fstream>
+#include <filesystem>
 #include <iostream>
+#include <imgtool.hpp>
 
 int main(int argc, char *argv[])
 {
@@ -26,11 +27,21 @@ int main(int argc, char *argv[])
         exit(0);
     }
 
-    std::ifstream file(program.get<std::string>("archive"), std::ios::binary);
-    if (!file)
+    std::filesystem::path path(program.get<std::string>("archive"));
+    if (!std::filesystem::exists(path) && !std::filesystem::is_directory(path))
     {
-        std::cout << "Failed to open archive" << std::endl;
-        return 1;
+        std::cout << "The specified archive does not exist" << std::endl;
+        exit(0);
+    }
+
+    IMGTool::Archive archive(path);
+
+    if (program.get<bool>("--list"))
+    {
+        for (auto &file : archive.files)
+        {
+            std::cout << file.first << std::endl;
+        }
     }
     
     return 0;
